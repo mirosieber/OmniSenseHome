@@ -39,9 +39,9 @@ void checkI2SConfiguration(app_config_t *config);
 
 /* Zigbee OTA configuration */
 // running muss immer eins hinterher hinken
-#define OTA_UPGRADE_RUNNING_FILE_VERSION 0xb
+#define OTA_UPGRADE_RUNNING_FILE_VERSION 0xc
 // Increment this value when the running image is updated
-#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0xc
+#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0xd
 // Increment this value when the downloaded image is updated
 #define OTA_UPGRADE_HW_VERSION 0x1
 // The hardware version, this can be used to differentiate between
@@ -223,20 +223,46 @@ void setRelay3(bool value) {
 }
 
 /************************ Temperature sensor task ****************************/
+
+static bool configer_temp_sensor() {
+  bool success = MTS4Z.begin(config->i2c.sda, config->i2c.scl, MEASURE_SINGLE);
+  if (!success) {
+    ESP_LOGE(TAG, "MTS4Z i2c initialization failed");
+    return false;
+  }
+  delay(10);
+  success &= MTS4Z.setMode(MEASURE_STOP,
+                           false); // Stop any ongoing measurement heater off
+  if (!success) {
+    ESP_LOGE(TAG, "MTS4Z setMode failed");
+    return false;
+  }
+  delay(10);
+  // frequenz hier egal, da single mode aktiv
+  success &=
+      MTS4Z.setConfig(MPS_1Hz, AVG_8, true); // average 8 samples, sleep mode
+  if (!success) {
+    ESP_LOGE(TAG, "MTS4Z setConfig failed");
+    return false;
+  }
+  delay(10);
+  success &= MTS4Z.setMode(MEASURE_SINGLE,
+                           false); // Set to single measurement mode heater off
+  if (!success) {
+    ESP_LOGE(TAG, "MTS4Z setMode to MEASURE_SINGLE failed");
+    return false;
+  }
+  return success;
+}
+
 static void temp_sensor_value_update(void *arg) {
   // Wait for Zigbee network to be ready
   while (!Zigbee.connected()) {
     delay(100);
   }
-  MTS4Z.begin(config->i2c.sda, config->i2c.scl, MEASURE_SINGLE);
-  delay(10);
-  MTS4Z.setMode(MEASURE_STOP, false); // Stop any ongoing measurement heater off
-  delay(10);
-  // frequenz hier egal, da single mode aktiv
-  MTS4Z.setConfig(MPS_1Hz, AVG_8, true); // average 8 samples, sleep mode
-  delay(10);
-  MTS4Z.setMode(MEASURE_SINGLE,
-                false); // Set to single measurement mode heater off
+  if (!configer_temp_sensor()) {
+    ESP_LOGE(TAG, "MTS4Z sensor configuration failed");
+  }
 
   // Additional stabilization delay
   delay(5000);
@@ -253,6 +279,9 @@ static void temp_sensor_value_update(void *arg) {
       zbTempSensor.setTemperature(temperature);
     } else {
       ESP_LOGW(TAG, "Invalid temperature reading: %.2f°C", temperature);
+      if (!configer_temp_sensor()) {
+        ESP_LOGE(TAG, "MTS4Z sensor re-configuration failed");
+      }
     }
     delay(5000);
   }
