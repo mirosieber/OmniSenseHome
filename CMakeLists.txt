@@ -6,7 +6,10 @@ cmake_minimum_required(VERSION 3.5)
 add_definitions(
   -DARDUINO_USB_MODE
   -DARDUINO_USB_CDC_ON_BOOT
+  -DCONFIG_ZB_DELTA_OTA=1
 )
 
+
+include_directories(${CMAKE_SOURCE_DIR}/managed_components/espressif__esp_delta_ota/include)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(OmniSensHome)

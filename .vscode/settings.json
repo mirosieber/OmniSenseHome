@@ -38,6 +38,7 @@
     "memory": "cpp",
     "random": "cpp",
     "mutex": "cpp",
-    "thread": "cpp"
+    "thread": "cpp",
+    "ostream": "cpp"
   }
 }
