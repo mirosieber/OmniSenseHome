@@ -18,6 +18,12 @@ Dieses Programm berechnet eine Wurzelfunktion die durch drei gewünschte Helligk
 Die resultierende Funktion hat die Form:
 
 $$
+f(x) = a \cdot \sqrt[n]{x - b} + c
+$$
+
+was folgender exponentialform entspricht:
+
+$$
 f(x) = a \cdot (x - b)^{\frac{1}{n}} + c
 $$
 
