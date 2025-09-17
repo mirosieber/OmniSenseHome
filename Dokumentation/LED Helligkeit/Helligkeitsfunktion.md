@@ -18,10 +18,10 @@ Dieses Programm berechnet eine Wurzelfunktion die durch drei gewünschte Helligk
 Die resultierende Funktion hat die Form:
 
 $$
-f(x) = a \cdot \sqrt{b \cdot x + c} + d
+f(x) = a \cdot (x - b)^{\frac{1}{n}} + c
 $$
 
 wobei x der Eingabewert in lux und f(x) der resultierende Helligkeitswert (0-255) der LED ist.
-Die Parameter a, b, c und d werden so berechnet, dass die Funktion durch die drei angegebenen Punkte (x1, y1), (x2, y2) und (x3, y3) verläuft.
+Die Parameter a, b, c und n werden so berechnet, dass die Funktion durch die drei angegebenen Punkte (x1, y1), (x2, y2) und (x3, y3) verläuft.
 
-diese parameter können anschliessend im Cpp Programm (RGB.cpp) eingefügt werden.
+diese parameter können anschliessend im Cpp Programm (Sensoren.cpp) eingefügt werden.
