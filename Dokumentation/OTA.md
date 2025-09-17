@@ -53,4 +53,4 @@ sobald neue daten auf das Git repository gepusht werden, leuft folgender ablauf 
 Um die Update zeiten zu minimieren (3h -> 3min) Wurde auf [Delta OTA](https://github.com/espressif/esp-zigbee-sdk/tree/main/examples/esp_zigbee_ota/ota_client#delta-ota-upgrade-functions) umgestellt.
 Dadurch wird nur die differenz zwischen alter und neuer Softwarte gesendet. ESP seitig wurde dazu mit dem define CONFIG_ZB_DELTA_OTA im CMakelist und zusätzlichen Files die aus der esp-zigbee-sdk in die Arduino Zigbee komponente kopiert werden mussten aud delta umgestellt.
 z2m bleibt gleich
-github action hat die zusätzliche aufgabe mit einem weiteren pytonscript die differenz zwischen dem neuen binary und dem aus dem letzten releas zu berechnen befor daraus dann die ota datei erstellt wird.
+Github action hat die zusätzliche aufgabe mit einem weiteren pytonscript die differenz zwischen dem neuen binary und dem aus dem letzten releas zu berechnen befor daraus dann die ota datei erstellt wird. Das Pyton script unterscheidet sich vom orginal, da es beim testen auf Windows einen fehler mit dem sha512 hatte.
