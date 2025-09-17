@@ -3,11 +3,13 @@
 **Datum:** 04. September 2025  
 **Ersteller:** Miro Sieber
 
+
 ## Inhalt:
 - neue firmware erstellen und hochladen
 - ESP32 seite
 - Zigbee2Mqtt seite
 - automatisches erstellen des Immages
+- Updated 17. September 2025 nach hinzufügen von delta Updates
 
 # Firmware erstellen und hochladen
 sobald alle änderungen per USB auf einem Bord getestet wurden und funktionieren, kann nachfolgender Anleitung eine neue Version erstellt werden und per OTA auf alle Boards geladen werden.
@@ -46,3 +48,9 @@ sobald neue daten auf das Git repository gepusht werden, leuft folgender ablauf 
 6. ein index file wird erstellt, das informationen wie filename, version, grösse und release link der ota datei enthält.
 7. Das neue OTA File wird als neues release unter dem namen der aktuellen Version veröffentlicht.
 8. das indexfile wird zurück auf das repository gepusht, so dass es z2m dort finden kann um automatisch zu überprüfen für welche geräte updates verfügbar sind.
+
+# Delta Updates:
+Um die Update zeiten zu minimieren (3h -> 3min) Wurde auf [Delta OTA](https://github.com/espressif/idf-extra-components/tree/master/esp_delta_ota/examples/https_delta_ota) umgestellt.
+Dadurch wird nur die differenz zwischen alter und neuer Softwarte gesendet. ESP seitig wurde dazu mit dem define CONFIG_ZB_DELTA_OTA im CMakelist und zusätzlichen Files die aus der esp-zigbee-sdk in die Arduino Zigbee komponente kopiert werden mussten aud delta umgestellt.
+z2m bleibt gleich
+github action hat die zusätzliche aufgabe mit einem weiteren pytonscript die differenz zwischen dem neuen binary und dem aus dem letzten releas zu berechnen befor daraus dann die ota datei erstellt wird.
