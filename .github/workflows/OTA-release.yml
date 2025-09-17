@@ -51,22 +51,26 @@ jobs:
           echo "version_hex=$VERSION_HEX" >> $GITHUB_OUTPUT
           echo "version_dec=$VERSION_DEC" >> $GITHUB_OUTPUT
 
-      - name: Download previous release binary
+      - name: Download previous release binary (based on version number)
         id: download_old_bin
         run: |
-          # Get the URL of OmniSensHome.bin from the latest release
-          url=$(gh release view --repo $GITHUB_REPOSITORY --json assets --jq '.assets[] | select(.name == "OmniSensHome.bin") | .url')
-
+          prev_version=$(( ${{ steps.extract_version.outputs.version_dec }} - 1 ))
+          prev_tag="v${prev_version}"
+          echo "Looking for release $prev_tag"
+      
+          url=$(gh release view "$prev_tag" --repo $GITHUB_REPOSITORY --json assets --jq '.assets[] | select(.name == "OmniSensHome.bin") | .url')
+      
           if [ -z "$url" ]; then
-            echo "No previous OmniSensHome.bin found in last release."
+            echo "No OmniSensHome.bin found in release $prev_tag"
             exit 1
           fi
-
+      
           echo "Downloading from $url"
-          gh release download --repo $GITHUB_REPOSITORY --pattern "OmniSensHome.bin" --dir .
+          gh release download "$prev_tag" --repo $GITHUB_REPOSITORY --pattern "OmniSensHome.bin" --dir .
           mv OmniSensHome.bin OmniSensHomeold.bin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
       - name: Run script to get Delta
