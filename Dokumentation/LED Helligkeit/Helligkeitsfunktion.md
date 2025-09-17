@@ -16,9 +16,11 @@ Desswegen wird nun eine Wurzelfunktion verwendet, die bei tiefen Werten steiler 
 
 Dieses Programm berechnet eine Wurzelfunktion die durch drei gewünschte Helligkeitswerte definiert wird.
 Die resultierende Funktion hat die Form:
+
 $$
 f(x) = a \cdot \sqrt{b \cdot x + c} + d
 $$
+
 wobei x der Eingabewert in lux und f(x) der resultierende Helligkeitswert (0-255) der LED ist.
 Die Parameter a, b, c und d werden so berechnet, dass die Funktion durch die drei angegebenen Punkte (x1, y1), (x2, y2) und (x3, y3) verläuft.
 
