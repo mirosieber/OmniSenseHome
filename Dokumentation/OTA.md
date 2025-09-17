@@ -50,7 +50,7 @@ sobald neue daten auf das Git repository gepusht werden, leuft folgender ablauf 
 8. das indexfile wird zurück auf das repository gepusht, so dass es z2m dort finden kann um automatisch zu überprüfen für welche geräte updates verfügbar sind.
 
 # Delta Updates:
-Um die Update zeiten zu minimieren (3h -> 3min) Wurde auf [Delta OTA]([https://github.com/espressif/idf-extra-components/tree/master/esp_delta_ota/examples/https_delta_ota](https://github.com/espressif/esp-zigbee-sdk/tree/main/examples/esp_zigbee_ota/ota_client#delta-ota-upgrade-functions)) umgestellt.
+Um die Update zeiten zu minimieren (3h -> 3min) Wurde auf [Delta OTA](https://github.com/espressif/esp-zigbee-sdk/tree/main/examples/esp_zigbee_ota/ota_client#delta-ota-upgrade-functions) umgestellt.
 Dadurch wird nur die differenz zwischen alter und neuer Softwarte gesendet. ESP seitig wurde dazu mit dem define CONFIG_ZB_DELTA_OTA im CMakelist und zusätzlichen Files die aus der esp-zigbee-sdk in die Arduino Zigbee komponente kopiert werden mussten aud delta umgestellt.
 z2m bleibt gleich
 github action hat die zusätzliche aufgabe mit einem weiteren pytonscript die differenz zwischen dem neuen binary und dem aus dem letzten releas zu berechnen befor daraus dann die ota datei erstellt wird.
