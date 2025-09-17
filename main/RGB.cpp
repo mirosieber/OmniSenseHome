@@ -31,10 +31,9 @@ void setRgbLedColor(app_config_t *config, uint8_t red, uint8_t green,
       scaled_red = 0;
     }
 
-    // analogWrite(config->rgb_led.red_pin, scaled_red);
-    // analogWrite(config->rgb_led.green_pin, scaled_green);
-    // analogWrite(config->rgb_led.blue_pin, scaled_blue);
-    analogWrite(config->rgb_led.red_pin, 255);
+    analogWrite(config->rgb_led.red_pin, scaled_red);
+    analogWrite(config->rgb_led.green_pin, scaled_green);
+    analogWrite(config->rgb_led.blue_pin, scaled_blue);
   }
 }
 
