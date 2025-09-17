@@ -72,10 +72,10 @@ jobs:
       - name: Run script to get Delta
         run: | 
           python OTAcreate/esp_delta_ota_patch_gen.py \
-          create_patch --chip esp32c6 \ 
-          --base_binary OmniSensHomeold.bin \
-          --new_binary build/OmniSensHome.bin \
-          --patch_file_name OTAcreate/Delta.bin
+            create_patch --chip esp32c6 \
+            --base_binary OmniSensHomeold.bin \
+            --new_binary build/OmniSensHome.bin \
+            --patch_file_name OTAcreate/Delta.bin
 
       - name: Run script to generate OTA
         run: |
