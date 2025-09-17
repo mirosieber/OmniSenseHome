@@ -1,1 +1,1 @@
-pyton script to automatically generate OTA data.
+pyton script to automatically generate delta and OTA data.
