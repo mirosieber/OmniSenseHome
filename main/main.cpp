@@ -310,7 +310,7 @@ static void temp_humidity_sensor_value_update(void *arg) {
     return;
   }
 
-  aht21.begin(config->i2c.sda, config->i2c.scl);
+    aht21.begin(config->i2c.sda, config->i2c.scl);
   delay(10);
   ens160.begin(config->sensors[sensor_index].i2c_address);
   ens160.setOperatingMode(SFE_ENS160_STANDARD);
