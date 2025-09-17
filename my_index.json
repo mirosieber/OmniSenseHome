@@ -1,9 +1,9 @@
 [
   {
     "fileName": "Zigbee_OTA_Client.ota",
-    "fileVersion": 13,
-    "fileSize": 37523,
-    "url": "https://github.com/mirosieber/OmniSensHome/releases/download/v13/Zigbee_OTA_Client.ota",
+    "fileVersion": 14,
+    "fileSize": 38032,
+    "url": "https://github.com/mirosieber/OmniSensHome/releases/download/v14/Zigbee_OTA_Client.ota",
     "imageType": 4113,
     "manufacturerCode": 4097,
     "modelId": "OmniSenseHome"
