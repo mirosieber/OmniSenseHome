@@ -39,9 +39,9 @@ void checkI2SConfiguration(app_config_t *config);
 
 /* Zigbee OTA configuration */
 // running muss immer eins hinterher hinken
-#define OTA_UPGRADE_RUNNING_FILE_VERSION 0xf
+#define OTA_UPGRADE_RUNNING_FILE_VERSION 0x10
 // Increment this value when the running image is updated
-#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0x10
+#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0x11
 // Increment this value when the downloaded image is updated
 #define OTA_UPGRADE_HW_VERSION 0x1
 // The hardware version, this can be used to differentiate between
@@ -640,13 +640,15 @@ static void occupancy_sensor_value_update(void *arg) {
   // Read firmware version first to check module capabilities
   ESP_LOGI(TAG, "Reading LD2412 firmware version");
   read_firmware_version();
-  delay(1000);
-  ESP_LOGI(TAG, "Enabling LD2412 engineering mode");
-  control_engineering_mode();
+  delay(500);
 
   // Disable Bluetooth by default on startup to match the OFF state
   ESP_LOGI(TAG, "Disabling LD2412 Bluetooth on startup (default state)");
   disable_bluetooth();
+  delay(500);
+  ESP_LOGI(TAG, "Enabling LD2412 engineering mode");
+  control_engineering_mode();
+
   delay(500); // Allow time for command to process
 
   // Now that LD2412 is initialized, set the Zigbee endpoint state
