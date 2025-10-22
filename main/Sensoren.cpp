@@ -138,6 +138,6 @@ void lux_sensor_value_update(void *arg) {
       ESP_LOGW(TAG, "Error reading lux sensor or invalid value: %.2f", lux);
     }
 
-    delay(500);
+    delay(100);
   }
 }

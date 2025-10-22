@@ -39,9 +39,9 @@ void checkI2SConfiguration(app_config_t *config);
 
 /* Zigbee OTA configuration */
 // running muss immer eins hinterher hinken
-#define OTA_UPGRADE_RUNNING_FILE_VERSION 0x10
+#define OTA_UPGRADE_RUNNING_FILE_VERSION 0x11
 // Increment this value when the running image is updated
-#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0x11
+#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0x12
 // Increment this value when the downloaded image is updated
 #define OTA_UPGRADE_HW_VERSION 0x1
 // The hardware version, this can be used to differentiate between
@@ -323,11 +323,8 @@ static void temp_humidity_sensor_value_update(void *arg) {
   ESP_LOGI(TAG, "AHT21 temperature/humidity sensor task starting...");
 
   for (;;) {
-    float ahtTemp =
-        aht21.readTemperature(); // read 6-bytes via I2C, takes 80 milliseconds
-    float ahtHumidity =
-        aht21.readHumidity(AHTXX_USE_READ_DATA); // use data from temperature
-                                                 // read, takes 0 milliseconds
+    float ahtTemp = aht21.readTemperature();
+    float ahtHumidity = aht21.readHumidity(AHTXX_USE_READ_DATA);
 
     // Validate readings
     if (ahtTemp > -40.0 && ahtTemp < 85.0 && ahtHumidity >= 0.0 &&
@@ -337,6 +334,13 @@ static void temp_humidity_sensor_value_update(void *arg) {
       //     ahtTemp, ahtHumidity);
       zbTempHumiditySensor.setTemperature(ahtTemp);
       zbTempHumiditySensor.setHumidity(ahtHumidity);
+      // Start Blinking RGB LED if high humidity
+      if (ahtHumidity >= 65.0 && config->rgb_led.enabled &&
+          zbRgbLight.getLightState()) {
+        toggleRgbBlink(config, true);
+      } else {
+        toggleRgbBlink(config, false); // Stop blinking
+      }
 
       // ens160 compensation
       ens160.setTempCompensationCelsius(ahtTemp);

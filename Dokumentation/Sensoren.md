@@ -14,7 +14,7 @@
 ## Illuminanz Sensor
 - Typ: OPT3004
 - Funktion: Misst die Umgebungshelligkeit
-- ausleseintervall: 500 ms
+- ausleseintervall: 100 ms
 - sonstiges: passt die RGB-LED-Helligkeit an
 
 ## Temperatur Sensor
@@ -27,7 +27,7 @@
 - Typ: AHT21
 - Funktion: Misst Temperatur und Luftfeuchtigkeit (+- 0.5°C, +- 3%)
 - ausleseintervall: 10s
-- sonstiges: läuft im gleichen Task wie Luftqualität Sensor, um kompensationswerte zu übergeben
+- sonstiges: läuft im gleichen Task wie Luftqualität Sensor, um kompensationswerte zu übergeben und Blinkt die LED bei hoher Luftfeuchtigkeit
 
 ## Luftqualität Sensor
 - Typ: ENS160

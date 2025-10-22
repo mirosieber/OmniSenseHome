@@ -3,6 +3,7 @@
 // RGB LED state variables (file-local)
 static uint8_t rgb_brightness = 100;       // Default brightness (0-255)
 static uint8_t rgb_brightnessFactor = 100; // Default brightness factor
+static bool rgb_blinking = false;
 static uint8_t rgb_red = 0;
 static uint8_t rgb_green = 0;
 static uint8_t rgb_blue = 0;
@@ -38,7 +39,14 @@ void setRgbLedColor(app_config_t *config, uint8_t red, uint8_t green,
 }
 
 void setRgbLedBrightness(app_config_t *config, uint8_t brightness) {
-  rgb_brightness = brightness;
+  if (rgb_blinking) {
+    static uint8_t value = 0;
+    value += 10;
+    rgb_brightness = (brightness * value) / 255;
+  } else {
+    rgb_brightness = brightness;
+  }
+
   // Reapply current colors with new brightness
   setRgbLedColor(config, rgb_red, rgb_green, rgb_blue);
   // ESP_LOGI(TAG, "RGB LED brightness set to %d", brightness);
@@ -47,7 +55,6 @@ void setRgbLedBrightness(app_config_t *config, uint8_t brightness) {
 /********************* RGB LED Zigbee callbacks **************************/
 void onRgbLightChange(app_config_t *config, bool state, uint8_t level) {
   // Always store the brightness level
-  // rgb_brightness = level;
   rgb_brightnessFactor = level;
 
   if (state) {
@@ -65,3 +72,5 @@ void onRgbLightChange(app_config_t *config, bool state, uint8_t level) {
     ESP_LOGI(TAG, "RGB LED turned OFF");
   }
 }
+
+void toggleRgbBlink(app_config_t *config, bool on) { rgb_blinking = on; }
