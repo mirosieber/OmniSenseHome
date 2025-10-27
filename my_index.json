@@ -7,14 +7,5 @@
     "imageType": 4113,
     "manufacturerCode": 4097,
     "modelId": "OmniSenseHome"
-  },
-  {
-    "fileName": "Zigbee_OTA_Client.ota",
-    "fileVersion": 2,
-    "fileSize": 16074,
-    "url": "https://github.com/mirosieber/OmniSenseContact/releases/download/v2/Zigbee_OTA_Client.ota",
-    "imageType": 4113,
-    "manufacturerCode": 4097,
-    "modelId": "OmniSenseContact"
   }
 ]
