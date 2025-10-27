@@ -118,12 +118,13 @@ void lux_sensor_value_update(void *arg) {
     // Serial.printf("[Lux Sensor] Lux: %.2f\r\n", lux);
     if (result.error == NO_ERROR && lux >= 0) {
       // Serial.printf("[Lux Sensor] Lux: %.2f\r\n", lux);
-      if (lux > 0) {
+      if (lux * 10 <= INT16_MAX) {
         //(kann keine nachkomastellen senden und z2m kann nicht int zu float
         // convertieren, einzige lösung wäre analog cluster verwenden)
-        zbLuxSensor.setTemperature(lux);
+        zbLuxSensor.setTemperature(lux / 10);
       } else {
-        zbLuxSensor.setTemperature(0.0);
+        // maximalwert senden
+        zbLuxSensor.setTemperature(((float)INT16_MAX) / 100.0);
       }
       if (zbRgbLight.getLightState()) {
         // Scale brightness based on lux if lux>1 brightness = lux*0.5 else 0
@@ -136,6 +137,7 @@ void lux_sensor_value_update(void *arg) {
 
     } else {
       ESP_LOGW(TAG, "Error reading lux sensor or invalid value: %.2f", lux);
+      zbLuxSensor.setTemperature(-1.0); // Indicate error with -1.0
     }
 
     delay(100);

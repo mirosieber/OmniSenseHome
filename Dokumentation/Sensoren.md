@@ -13,9 +13,10 @@
 
 ## Illuminanz Sensor
 - Typ: OPT3004
-- Funktion: Misst die Umgebungshelligkeit
+- Funktion: Misst die Umgebungshelligkeit (0 bis 83'000 Lux 0.01 Lux Auflösung)
 - ausleseintervall: 100 ms
-- sonstiges: passt die RGB-LED-Helligkeit an
+- sonstiges: passt die RGB-LED-Helligkeit an 
+             der wertebereich muste auf grund von zigbee limiten auf 0 bis 3276.7 Lux und 0.1 Lux auflösung limitiert werden
 
 ## Temperatur Sensor
 - Typ: MTS4Z

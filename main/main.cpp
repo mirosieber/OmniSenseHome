@@ -39,9 +39,9 @@ void checkI2SConfiguration(app_config_t *config);
 
 /* Zigbee OTA configuration */
 // running muss immer eins hinterher hinken
-#define OTA_UPGRADE_RUNNING_FILE_VERSION 0x11
+#define OTA_UPGRADE_RUNNING_FILE_VERSION 0x12
 // Increment this value when the running image is updated
-#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0x12
+#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0x13
 // Increment this value when the downloaded image is updated
 #define OTA_UPGRADE_HW_VERSION 0x1
 // The hardware version, this can be used to differentiate between
@@ -335,8 +335,8 @@ static void temp_humidity_sensor_value_update(void *arg) {
       zbTempHumiditySensor.setTemperature(ahtTemp);
       zbTempHumiditySensor.setHumidity(ahtHumidity);
       // Start Blinking RGB LED if high humidity
-      if (ahtHumidity >= 65.0 && config->rgb_led.enabled &&
-          zbRgbLight.getLightState()) {
+      if ((ahtHumidity >= 60.0 || ahtHumidity <= 40.0) &&
+          config->rgb_led.enabled && zbRgbLight.getLightState()) {
         toggleRgbBlink(config, true);
       } else {
         toggleRgbBlink(config, false); // Stop blinking
@@ -1320,9 +1320,9 @@ extern "C" void app_main(void) {
   }
 
   // Add stabilization delay after network connection
-  ESP_LOGI(TAG, "Zigbee network connected. Waiting 10 seconds for network "
-                "stabilization...");
-  delay(10000);
+  // ESP_LOGI(TAG, "Zigbee network connected. Waiting 10 seconds for network "
+  //              "stabilization...");
+  // delay(10000);
 
   // check if boot is pressed for factory reset
   if (digitalRead(BOOT_PIN) == LOW) {
