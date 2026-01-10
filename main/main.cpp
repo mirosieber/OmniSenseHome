@@ -39,9 +39,9 @@ void checkI2SConfiguration(app_config_t *config);
 
 /* Zigbee OTA configuration */
 // running muss immer eins hinterher hinken
-#define OTA_UPGRADE_RUNNING_FILE_VERSION 0x12
+#define OTA_UPGRADE_RUNNING_FILE_VERSION 0x13
 // Increment this value when the running image is updated
-#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0x13
+#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0x14
 // Increment this value when the downloaded image is updated
 #define OTA_UPGRADE_HW_VERSION 0x1
 // The hardware version, this can be used to differentiate between
@@ -190,9 +190,34 @@ void triggerIntruderDetected() {
 }
 
 /********************* Relay control functions **************************/
+
+// Determine if a relay is Normally Closed based on its name
+bool isRelayNC(uint8_t relay_index) {
+  if (strncmp(config->relays[relay_index].name, "NCRelay", 7) == 0) {
+    return true;
+  }
+  if (strncmp(config->relays[relay_index].name, "NORelay", 7) == 0) {
+    return false;
+  }
+  // To support old naming convention
+  if (strncmp(config->relays[relay_index].name, "Relay", 5) == 0) {
+    return true;
+  }
+  // Default logic: NO
+  return false;
+}
+
+/* XOR (^) to handle NC/NO relay logic
+NC? value  Output
+0   0      0
+0   1      1
+1   0      1
+1   1      0
+*/
+
 void setRelay0(bool value) {
   if (config->relays[0].enabled) {
-    digitalWrite(config->relays[0].pin, !value);
+    digitalWrite(config->relays[0].pin, (isRelayNC(0) ^ value));
     ESP_LOGI(TAG, "Relay 0 (%s) set to %s", config->relays[0].name,
              value ? "ON" : "OFF");
   }
@@ -200,7 +225,7 @@ void setRelay0(bool value) {
 
 void setRelay1(bool value) {
   if (config->relays[1].enabled) {
-    digitalWrite(config->relays[1].pin, !value);
+    digitalWrite(config->relays[1].pin, (isRelayNC(1) ^ value));
     ESP_LOGI(TAG, "Relay 1 (%s) set to %s", config->relays[1].name,
              value ? "ON" : "OFF");
   }
@@ -208,7 +233,7 @@ void setRelay1(bool value) {
 
 void setRelay2(bool value) {
   if (config->relays[2].enabled) {
-    digitalWrite(config->relays[2].pin, !value);
+    digitalWrite(config->relays[2].pin, (isRelayNC(2) ^ value));
     ESP_LOGI(TAG, "Relay 2 (%s) set to %s", config->relays[2].name,
              value ? "ON" : "OFF");
   }
@@ -216,7 +241,7 @@ void setRelay2(bool value) {
 
 void setRelay3(bool value) {
   if (config->relays[3].enabled) {
-    digitalWrite(config->relays[3].pin, !value);
+    digitalWrite(config->relays[3].pin, (isRelayNC(3) ^ value));
     ESP_LOGI(TAG, "Relay 3 (%s) set to %s", config->relays[3].name,
              value ? "ON" : "OFF");
   }
@@ -1149,7 +1174,20 @@ extern "C" void app_main(void) {
       relays_enabled = true;
       // Initialize relay pin as output and set to OFF
       pinMode(config->relays[i].pin, OUTPUT);
-      digitalWrite(config->relays[i].pin, HIGH); // Set to OFF state
+      switch (i) {
+      case 0:
+        setRelay0(false); // Ensure relay is OFF initially
+        break;
+      case 1:
+        setRelay1(false); // Ensure relay is OFF initially
+        break;
+      case 2:
+        setRelay2(false); // Ensure relay is OFF initially
+        break;
+      case 3:
+        setRelay3(false); // Ensure relay is OFF initially
+        break;
+      }
       ESP_LOGI(TAG, "Relay %d (%s) initialized on pin %d", i,
                config->relays[i].name, config->relays[i].pin);
 

@@ -61,7 +61,14 @@ Contact -> Ein Kontakt, zur überwachung von Türen und Fenstern. Pullup aktivie
 
 Relays: 
 
-Die Relais sind in einem Array definiert und können bei Bedarf aktiviert oder deaktiviert werden. Es sind maximal 4 Relais möglich. 
+Die Relais sind in einem Array definiert und können bei Bedarf aktiviert oder deaktiviert werden. Es sind maximal 4 Relais möglich. Anhand des Namens wird der Typ des Relais bestimmt (möglich sind "NORelay", "NCRelay", "Relay").
+
+NORelay -> Normal Open Relay, das Relais ist im Ruhezustand geöffnet und schliesst bei Aktivierung den Kontakt.
+
+NCRelay -> Normal Closed Relay, das Relais ist im Ruhezustand geschlossen und öffnet bei Aktivierung den Kontakt. (inverse Logik)
+
+(Relay -> Veraltet! Wird wie ein *NCRelay* behandelt.)
+
 
 
 ## **Wichtig!**
