@@ -8,6 +8,7 @@ um neues konfig file zu laden zum Beispiel um Fensterkontakt hinzuzufügen, komp
 
 wenn das Programm nicht mehr kompilieren will: 
 
+
 idf.py fullclean (wenn das nicht geht von hand den managed_components ordner löschen und idf.py clean ausführen)
 idf.py build
 
