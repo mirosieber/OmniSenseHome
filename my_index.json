@@ -1,20 +1,11 @@
 [
   {
     "fileName": "Zigbee_OTA_Client.ota",
-    "fileVersion": 18,
-    "fileSize": 56022,
-    "url": "https://github.com/mirosieber/OmniSensHome/releases/download/v18/Zigbee_OTA_Client.ota",
+    "fileVersion": 19,
+    "fileSize": 56457,
+    "url": "https://github.com/mirosieber/OmniSensHome/releases/download/v19/Zigbee_OTA_Client.ota",
     "imageType": 4113,
     "manufacturerCode": 4097,
     "modelId": "OmniSenseHome"
-  },
-  {
-    "fileName": "Zigbee_OTA_Client.ota",
-    "fileVersion": 4,
-    "fileSize": 32748,
-    "url": "https://github.com/mirosieber/OmniSenseContact/releases/download/v4/Zigbee_OTA_Client.ota",
-    "imageType": 4114,
-    "manufacturerCode": 4097,
-    "modelId": "OmniSenseContact"
   }
 ]
