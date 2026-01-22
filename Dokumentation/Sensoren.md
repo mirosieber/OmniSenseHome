@@ -60,7 +60,7 @@
 
 
 ## Intruder Alarm
-Der Omnisense fungiert auch als Alarmanlage und kann bei unbefugtem Zutritt Alarm schlagen. Der Intruder Alarm kann über Zigbee aktiviert werden, er überwacht die Fensterkontakte und den Präsenzsensor. Bei Alarm wird der Lautsprecher oder der Buzzer aktiviert. Und der Alarm wird an den Coordinator gesendet. Der akustische Alarm kann auch direkt via Zigbee aktiviert werden.
+Der OmniSense fungiert auch als Alarmanlage und kann bei unbefugtem Zutritt Alarm schlagen. Der Intruder Alarm kann über Zigbee aktiviert werden, er überwacht die Fensterkontakte und den Präsenzsensor. Bei Alarm wird der Lautsprecher oder der Buzzer aktiviert. Und der Alarm wird an den Coordinator gesendet. Der akustische Alarm kann auch direkt via Zigbee aktiviert werden.
 
 ## RGB LED
 Die RGB LED zeigt mit 5 Farben an, welche Luftqualität herrscht. Die Farben sind wie folgt zugeordnet:
