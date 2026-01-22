@@ -31,7 +31,7 @@ und im configuration.yaml muss hinzugefügt werden:
 
 ` ota: `
 `	update_check_interval: 2880 `
-`zigbee_ota_override_index_location: https://raw.githubusercontent.com/mirosieber/OmniSensHome/refs/heads/main/my_index.json`
+`zigbee_ota_override_index_location: https://raw.githubusercontent.com/mirosieber/OmniSenseHome/refs/heads/main/my_index.json`
 
 dieses index file muss unter inem öffentilchen link verfügbar sein und enthält informationen über das neuste verfügbare update.
 

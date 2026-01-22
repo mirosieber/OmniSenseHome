@@ -1,4 +1,4 @@
-# OmniSensHome
+# OmniSenseHome
 
 **A Comprehensive Smart Home Multi-Sensor Platform Based on ESP32-C6 with Zigbee Communication**
 
@@ -36,7 +36,7 @@
 
 ## Overview
 
-OmniSensHome is a versatile, modular smart home sensor platform built on the ESP32-C6 microcontroller that communicates via **Zigbee 3.0**. The project allows you to create custom multi-sensor devices that can monitor various environmental parameters, control actuators, and integrate seamlessly with home automation systems like **Zigbee2MQTT** and **Home Assistant**.
+OmniSenseHome is a versatile, modular smart home sensor platform built on the ESP32-C6 microcontroller that communicates via **Zigbee 3.0**. The project allows you to create custom multi-sensor devices that can monitor various environmental parameters, control actuators, and integrate seamlessly with home automation systems like **Zigbee2MQTT** and **Home Assistant**.
 
 The system is designed with flexibility in mind - a single firmware can support multiple hardware configurations through a JSON-based configuration file. This approach eliminates the need to recompile code for different sensor combinations.
 
@@ -92,10 +92,10 @@ The system is designed with flexibility in mind - a single firmware can support 
 
 ### Custom PCB Design
 
-OmniSensHome is built on a **custom PCB** based on the **ESP32-C6 Mini** module. The PCB integrates all necessary sensor interfaces, and peripheral connectors.
+OmniSenseHome is built on a **custom PCB** based on the **ESP32-C6 Mini** module. The PCB integrates all necessary sensor interfaces, and peripheral connectors.
 
 **PCB Documentation:**
-- [Schematic & Design Files](https://github.com/mirosieber/OmniSensHome-Hardware) *(Link to hardware repository placeholder)*
+- [Schematic & Design Files](https://github.com/mirosieber/OmniSenseHome-Hardware) *(Link to hardware repository placeholder)*
 <table>
   <tr>
     <td><img src="./Dokumentation/images/PCB.png" alt="custom PCB" width="300"/></td>
@@ -147,7 +147,7 @@ The ESP32-C6 has limited external GPIO pins available for peripherals:
 
 ## Software Architecture
 
-OmniSensHome is built on **FreeRTOS** and utilizes a multi-tasking architecture where each sensor and actuator runs in its own dedicated task. The system is highly modular and only creates tasks for sensors/actuators that are enabled in the configuration file.
+OmniSenseHome is built on **FreeRTOS** and utilizes a multi-tasking architecture where each sensor and actuator runs in its own dedicated task. The system is highly modular and only creates tasks for sensors/actuators that are enabled in the configuration file.
 
 ### FreeRTOS Tasks
 
@@ -201,8 +201,8 @@ Quick path:
 1) Install [ESP-IDF v5.x](https://docs.espressif.com/projects/esp-idf/en/latest/esp32c6/get-started/) and Python 3.x.
 2) Clone the repo and build:
    ```bash
-   git clone https://github.com/mirosieber/OmniSensHome.git
-   cd OmniSensHome
+   git clone https://github.com/mirosieber/OmniSenseHome.git
+   cd OmniSenseHome
    idf.py build
    ```
 3) Flash firmware: `idf.py -p <PORT> flash`
@@ -252,7 +252,7 @@ The RGB LED provides visual feedback about air quality:
 
 ### Intruder Alarm System
 
-OmniSensHome can function as a security alarm system:
+OmniSenseHome can function as a security alarm system:
 
 **Features:**
 - Activate/deactivate via Zigbee endpoint 20
@@ -325,9 +325,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact
 
 **Author:** Miro Sieber  
-**Repository:** [github.com/mirosieber/OmniSensHome](https://github.com/mirosieber/OmniSensHome)
+**Repository:** [github.com/mirosieber/OmniSenseHome](https://github.com/mirosieber/OmniSenseHome)
 
-For issues and feature requests, please use the [GitHub Issues](https://github.com/mirosieber/OmniSensHome/issues) page.
+For issues and feature requests, please use the [GitHub Issues](https://github.com/mirosieber/OmniSenseHome/issues) page.
 
 ---
 
