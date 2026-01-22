@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Build OmniSensHome",
+			"label": "Build OmniSenseHome",
 			"type": "shell",
 			"command": "idf.py",
 			"args": [
