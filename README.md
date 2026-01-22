@@ -96,7 +96,16 @@ OmniSensHome is built on a **custom PCB** based on the **ESP32-C6 Mini** module.
 
 **PCB Documentation:**
 - [Schematic & Design Files](https://github.com/mirosieber/OmniSensHome-Hardware) *(Link to hardware repository placeholder)*
-- ![OmniSensHome PCB](./docs/images/pcb-design.png) *(PCB design image placeholder)*
+<table>
+  <tr>
+    <td><img src="./Dokumentation/images/PCB.png" alt="custom PCB" width="300"/></td>
+    <td><img src="./Dokumentation/images/Case.png" alt="custom Case" width="300"/></td>
+  </tr>
+  <tr>
+    <td>Custom PCB</td>
+    <td>Custom Case</td>
+  </tr>
+</table>
 
 ### Supported Sensors
 
