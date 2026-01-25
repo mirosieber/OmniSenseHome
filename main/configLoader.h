@@ -45,7 +45,7 @@ typedef struct {
   bool enabled;
   char ssid[64];
   char password[64];
-} wifi_config_t;
+} app_wifi_config_t;
 
 typedef struct {
   bool enabled;
@@ -86,7 +86,7 @@ typedef struct {
 
 typedef struct {
   device_info_t device;
-  wifi_config_t wifi;
+  app_wifi_config_t wifi;
   rgb_led_config_t rgb_led;
   i2c_config_t i2c;
   speaker_config_t speaker;

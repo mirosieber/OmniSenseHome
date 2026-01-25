@@ -28,6 +28,8 @@
 #include "TaskMonitor.h"
 #include "Wire.h"
 #include "ld2412.h"
+#include "nvs.h"
+#include "nvs_flash.h"
 #include "uart_config.h"
 #include <AHTxx.h>
 
@@ -36,12 +38,13 @@ static const char *TAG = "main";
 // Forward declarations
 void onIntruderAlertControl(bool alert_state);
 void checkI2SConfiguration(app_config_t *config);
+static esp_err_t ensureNvsInit();
 
 /* Zigbee OTA configuration */
 // running muss immer eins hinterher hinken
-#define OTA_UPGRADE_RUNNING_FILE_VERSION 0x13
+#define OTA_UPGRADE_RUNNING_FILE_VERSION 0x14
 // Increment this value when the running image is updated
-#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0x14
+#define OTA_UPGRADE_DOWNLOADED_FILE_VERSION 0x15
 // Increment this value when the downloaded image is updated
 #define OTA_UPGRADE_HW_VERSION 0x1
 // The hardware version, this can be used to differentiate between
@@ -85,6 +88,8 @@ ZigbeeLight zbAlarmTrigger = ZigbeeLight(24);
 // Reset Endpoint
 ZigbeeLight zbReset = ZigbeeLight(23);
 
+ZigbeeAnalog zbHumidityOffset = ZigbeeAnalog(25);
+
 MTS4X MTS4Z = MTS4X();
 AHTxx aht21(AHTXX_ADDRESS_X38, AHTXX_I2C_SENSOR::AHT2x_SENSOR);
 SparkFun_ENS160 ens160;
@@ -107,6 +112,29 @@ static bool intruder_playback_active =
 static unsigned long last_led_update_time = 0;
 static const unsigned long LED_UPDATE_INTERVAL =
     30000; // 30 seconds in milliseconds
+
+// Initialize NVS once and reuse
+static esp_err_t ensureNvsInit() {
+  static bool nvs_ready = false;
+  if (nvs_ready) {
+    return ESP_OK;
+  }
+
+  esp_err_t err = nvs_flash_init();
+  if (err == ESP_ERR_NVS_NO_FREE_PAGES ||
+      err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+    ESP_LOGW(TAG, "NVS partition needs erase, erasing...");
+    ESP_ERROR_CHECK(nvs_flash_erase());
+    err = nvs_flash_init();
+  }
+
+  if (err == ESP_OK) {
+    nvs_ready = true;
+  } else {
+    ESP_LOGE(TAG, "Failed to init NVS: %s", esp_err_to_name(err));
+  }
+  return err;
+}
 
 // External reference to system_queue defined in ld2412_local component
 extern QueueHandle_t system_queue;
@@ -247,6 +275,73 @@ void setRelay3(bool value) {
   }
 }
 
+/*****Humidity callibration function *****/
+void onHumidityOffsetChange(float offset) {
+  ESP_LOGI(TAG, "Humidity offset set to: %.2f", offset);
+
+  if (ensureNvsInit() != ESP_OK) {
+    return;
+  }
+
+  nvs_handle_t nvs_handle;
+  esp_err_t err = nvs_open("humidity", NVS_READWRITE, &nvs_handle);
+  if (err != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to open NVS for humidity offset: %s",
+             esp_err_to_name(err));
+    return;
+  }
+
+  err = nvs_set_blob(nvs_handle, "offset", &offset, sizeof(offset));
+  if (err != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to write humidity offset to NVS: %s",
+             esp_err_to_name(err));
+    nvs_close(nvs_handle);
+    return;
+  }
+
+  err = nvs_commit(nvs_handle);
+  nvs_close(nvs_handle);
+
+  if (err == ESP_OK) {
+    ESP_LOGI(TAG, "Humidity offset saved to NVS");
+  } else {
+    ESP_LOGE(TAG, "Failed to commit humidity offset to NVS: %s",
+             esp_err_to_name(err));
+  }
+}
+
+float readHumidityOffset() {
+  float offset = 0.0f; // default when nothing stored yet
+
+  if (ensureNvsInit() != ESP_OK) {
+    return offset;
+  }
+
+  nvs_handle_t nvs_handle;
+  esp_err_t err = nvs_open("humidity", NVS_READONLY, &nvs_handle);
+  if (err != ESP_OK) {
+    ESP_LOGW(TAG, "NVS humidity namespace missing, using default offset 0");
+    return offset;
+  }
+
+  size_t required_size = sizeof(offset);
+  err = nvs_get_blob(nvs_handle, "offset", &offset, &required_size);
+  nvs_close(nvs_handle);
+
+  if (err == ESP_ERR_NVS_NOT_FOUND) {
+    ESP_LOGI(TAG, "No stored humidity offset found, using default 0");
+    return 0.0f;
+  }
+  if (err != ESP_OK || required_size != sizeof(offset)) {
+    ESP_LOGW(TAG, "Failed to read humidity offset, using default: %s",
+             esp_err_to_name(err));
+    return 0.0f;
+  }
+
+  ESP_LOGI(TAG, "Restored humidity offset from NVS: %.2f", offset);
+  return offset;
+}
+
 /************************ Temperature sensor task ****************************/
 
 static bool configer_temp_sensor() {
@@ -350,6 +445,7 @@ static void temp_humidity_sensor_value_update(void *arg) {
   for (;;) {
     float ahtTemp = aht21.readTemperature();
     float ahtHumidity = aht21.readHumidity(AHTXX_USE_READ_DATA);
+    ahtHumidity += readHumidityOffset(); // Apply stored offset
 
     // Validate readings
     if (ahtTemp > -40.0 && ahtTemp < 85.0 && ahtHumidity >= 0.0 &&
@@ -999,6 +1095,8 @@ extern "C" void app_main(void) {
                                   config->device.model);
   zbAlarmTrigger.setManufacturerAndModel(config->device.manufacturer,
                                          config->device.model);
+  zbHumidityOffset.setManufacturerAndModel(config->device.manufacturer,
+                                           config->device.model);
 
   // Set power source for all endpoints
   if (strcmp(config->device.power_supply, "battery") == 0) {
@@ -1018,6 +1116,7 @@ extern "C" void app_main(void) {
     zbIntruderDetected.setPowerSource(ZB_POWER_SOURCE_BATTERY);
     zbReset.setPowerSource(ZB_POWER_SOURCE_BATTERY);
     zbAlarmTrigger.setPowerSource(ZB_POWER_SOURCE_BATTERY);
+    zbHumidityOffset.setPowerSource(ZB_POWER_SOURCE_BATTERY);
   } else {
     zbTempSensor.setPowerSource(ZB_POWER_SOURCE_MAINS);
     zbTempHumiditySensor.setPowerSource(ZB_POWER_SOURCE_MAINS);
@@ -1035,6 +1134,7 @@ extern "C" void app_main(void) {
     zbIntruderDetected.setPowerSource(ZB_POWER_SOURCE_MAINS);
     zbReset.setPowerSource(ZB_POWER_SOURCE_MAINS);
     zbAlarmTrigger.setPowerSource(ZB_POWER_SOURCE_MAINS);
+    zbHumidityOffset.setPowerSource(ZB_POWER_SOURCE_MAINS);
   }
 
   // Set callback functions for relays change
@@ -1057,6 +1157,9 @@ extern "C" void app_main(void) {
 
   // Set callback function for intruder alert control
   zbIntruderAlert.onLightChange(onIntruderAlertControl);
+
+  // Set callback function for humidity offset control
+  zbHumidityOffset.onAnalogOutputChange(onHumidityOffsetChange);
 
   // Use lambda for reset control instead of named function
   zbReset.onLightChange([](bool reset_state) {
@@ -1104,6 +1207,14 @@ extern "C" void app_main(void) {
                                                1); // min = 0%, max = 100%,
                                                    // tolerance = 1%
         Zigbee.addEndpoint(&zbTempHumiditySensor);
+        // initialize humidity offset
+        zbHumidityOffset.addAnalogOutput();
+        zbHumidityOffset.setAnalogOutputApplication(
+            ESP_ZB_ZCL_AI_HUMIDITY_OTHER);
+        zbHumidityOffset.setAnalogOutputDescription("Humidity Offset (%)");
+        zbHumidityOffset.setAnalogOutputResolution(0.1);
+        zbHumidityOffset.setAnalogOutputMinMax(-50.0, 50.0);
+        Zigbee.addEndpoint(&zbHumidityOffset);
       } else if (strcmp(config->sensors[i].type, "ENS160") == 0) {
         // Initialize ENS160 sensor
         Zigbee.addEndpoint(&zbeCo2Sensor);
@@ -1444,6 +1555,11 @@ extern "C" void app_main(void) {
     xTaskCreate(buzzerTask, "buzzer_task", 2048, NULL, 2, NULL);
     ESP_LOGI(TAG, "Buzzer task started");
   }
+
+  // set humidity offset to last value and send it to zigbee
+  float stored_offset = readHumidityOffset();
+  zbHumidityOffset.setAnalogOutput(stored_offset);
+  zbHumidityOffset.reportAnalogOutput();
 
   // Start Zigbee OTA client query, first request is within a minute and the
   // next requests are sent every hour automatically
